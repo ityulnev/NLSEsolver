@@ -24,10 +24,10 @@ function [result]=calc_mainfunctionRK(mesh,pulse,beam,medium,Erf,M_fd)
 % % GVD=-1i.*(2*pi.*mesh.f-pulse.w0).^2.*medium.kGVD(pulse.pfmid)./2;    
 %Divergence in zylinder coordinates
 [Etrans]=do_2Dfinitedifference(mesh,medium,Erf,M_fd);
-Etrans(abs(Etrans).^2<max(max(abs(Etrans).^2)).*1e-9)=0;
+% Etrans(abs(Etrans).^2<max(max(abs(Etrans).^2)).*1e-20)=0;
 % NL=myfft((0.*SPM+0.*PLSM).*Et,mesh);
 NL=0;
-DIV=(-1i./(2.*medium.k)).*Etrans;
+DIV=(-1i./(2.*medium.k0)).*Etrans;
 DIV(isinf(DIV))=0;
 DIV(isnan(DIV))=0;
 % div=0;

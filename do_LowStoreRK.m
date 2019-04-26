@@ -4,32 +4,23 @@
 % Source: 
 % (J. H. WILLIAMSON, 'Low-Storage Runge-Kutta Schemes',JOURNAL OF
 % COMPUTATIONAL PHYSICS, 1980)
-function [Erf]=do_LowStoreRK(mesh,pulse,beam,fiber,Erf,M_fd,m)
+function [Erf]=do_LowStoreRK(mesh,pulse,beam,fiber,Erf,M_fd,h)
 %RK Coefficients
 a_rk=[0, -5/9,-153/128];
 b_rk=[1/3, 15/16, 8/15];
 q=0;
-
-Eprev=[Erf(1:3,:);Erf(end-2:end,:)];
 %Calc Phase of reflected wave e(ikh)
-
     for mm=1:3
-    q=mesh.dz.*calcfunctionRK(mesh,pulse,beam,fiber,Erf,M_fd)+a_rk(mm).*q;   
+    q=h.*calc_mainfunctionRK(mesh,pulse,beam,fiber,Erf,M_fd)+a_rk(mm).*q;   
     Erf=Erf+b_rk(mm).*q;
-
-
-    [Erf]=set_boundaries(mesh,fiber,Erf,M_fd,Eprev,mm);
-%     fmid=find(abs(Erf(1,:))==max(abs(Erf(1,:))));
-% kkr=log(Erf(2:end,fmid)./Erf(1:end-1,fmid))./(1i);
-% % kkl=log(Erf(1:end-1,fmid)./Erf(2:end,fmid))./(1i);
-% plot(mesh.r,[[0;real(kkr)./mesh.dr]]); legend([num2str(kkr(end)./mesh.dr)])
-% xlim([0 140e-6])
+    [Erf]=set_boundaries(mesh,pulse,fiber,Erf,M_fd,mm);
+% kkr=log(Erf(2:end,pulse.pfmid)./Erf(1:end-1,pulse.pfmid))./(1i);
+% plot(mesh.r(2:end),[real(kkr)./mesh.dr]); legend([num2str(kkr(end)./mesh.dr)])
 % pause(0.1);
-
-%     Eprev(4:6,:)=Erf(end-2:end,:);
-    end
-
-
+    end  
+% plot(mesh.r,angle(Erf(:,pulse.pfmid)))    
+Erf(isnan(Erf))=0;
+Erf(isinf(Erf))=0;
 end
 
 
