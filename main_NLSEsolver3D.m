@@ -8,10 +8,10 @@ medium=medium_init(mesh,beam,'Neon');% parameters for medium    #Set(refractive 
 pulse=pulse_init(mesh,beam,medium,0,1);% calculate pulse        #Set(Et(t,r,z=0),Ef,It,If)
 
 %% 2D Propagate, Finite Difference + Split Step
-boundcon="openCorrected"; %'open'
+boundcon="openCorrected"; %'openCorrected'
 for bc=boundcon
 [Erf,Erz]=do_FourierSplitStep2D(mesh,beam,medium,pulse,bc);
 end
 
-% save('my3Dprop1.mat');
+save('my3Dprop1.mat');
 

@@ -10,22 +10,28 @@ switch M_fd.boundary
         Erf(1,:)=Erf(2,:).*exp(-1i.*kr_L.*mesh.dr);
         kr=log(Erf(end-1,:)./Erf(end-2,:))./(1i*mesh.dr);
         kr=(kr).*mesh.r(end)/mesh.r(end-1); 
-        kr(real(kr)>0)=0+1i.*imag(kr(real(kr)>0));
+%         kr(real(kr)>0)=0+1i.*imag(kr(real(kr)>0));
         Erf(end,:)=Erf(end-1,:).*exp(1i.*(kr).*mesh.dr);%(Eprev(end,:)./Eprev(end-1,:));
     case 'openCorrected'
         %Left
         kr_L=log(Erf(3:4,:)./Erf(2:3,:))./(1i*mesh.dr);
-        kr_LNext=2.*kr_L(1,:)-1.*kr_L(2,:);%delKr(2)=delKr(3)-dKr, with dKr=delKr(4)-delKr(3)
+        kr_LNext=2.*kr_L(1,:)-1.*kr_L(2,:);                                 %delKr(2)=delKr(3)-dKr, with dKr=delKr(4)-delKr(3)
+        LRbound1=find_bounds(pulse.Erf(3,:));
+        kr_LNext=mean(kr_LNext(LRbound1(:,1):LRbound1(:,2)));               %Calculate average kr and set it constant over Erf(3,:)                                 
+%         kr_LNext=0;
         Erf(1,:)=Erf(2,:).*exp(-1i.*kr_LNext.*mesh.dr);
         %Right
         kr=log(Erf(end-2:end-1,:)./Erf(end-3:end-2,:))./(1i*mesh.dr);
-        krNext=2.*kr(2,:)-kr(1,:);%delKr(Nr+1)=delKr(Nr)+dKr, with dKr=delKr(Nr)-delKr(Nr-1), dKr is a constant value! b.c. linear function with dr->const
-        Erf(end,:)=Erf(end-1,:).*exp(1i.*(krNext).*mesh.dr);%(Eprev(end,:)./Eprev(end-1,:));
+        LRbound2=find_bounds(pulse.Erf(end-1,:));
+        krNext=2.*kr(2,:)-kr(1,:);                                          %delKr(Nr+1)=delKr(Nr)+dKr, with dKr=delKr(Nr)-delKr(Nr-1), dKr is a constant value! b.c. linear function with dr->const
+        krNext=mean(krNext(LRbound2(:,1):LRbound2(:,2)));
+        Erf(end,:)=Erf(end-1,:).*exp(1i.*(krNext).*mesh.dr);                %(Eprev(end,:)./Eprev(end-1,:));
     case 'reflect'
-        Erf(end,:)=zeros(1,mesh.flength);
+        Erf(1,:)=Erf(2,:);
+        Erf(end,:)=Erf(end-1,:);
+%         Erf(end,:)=zeros(1,mesh.flength);
     case 'fiber'
         Erf(end,:)=Erf(end-1,:).*((medium.n0^2.*mesh.r(end-1))./(1.45^2.*mesh.r(end)));%Refr index step HCF boundary        
 end
-% plot(mesh.f,real(kr));
-% pause(0.1)
+
 end

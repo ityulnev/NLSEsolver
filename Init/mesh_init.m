@@ -2,23 +2,26 @@
 classdef mesh_init
     
     properties
-    Lz,dz,z,zlength,fmax,df,fmin,f,flength,fmid,freal,t,dt,R,dr,r,rlength,wvl,dwvl,rmin,fbound,rmid,tmid,test
+    Lz,dz,z,zlength,fmax,df,indexfmid,f,flength,fmin,freal,t,dt,R,dr,r,rlength,wvl,dwvl,rmin,fbound,rmid,tmid,test
     end
     
    methods 
        function s=mesh_init(beam,Lz,dim)
         %z propagation
         s.Lz=Lz;%[m]
-        s.dz=0.005e-3;
+        s.dz=5e-6;
         s.z=0:s.dz:s.Lz;
         s.zlength=length(s.z);
         %frequency domain
-        s.fmax=beam.f0*5;%[1/s]
+        s.fmax=beam.f0*2;%[1/s]
         s.df=1e11;
-        s.fmin=1e14;
+        s.fmin=1e11;
         s.f=-s.fmax:s.df:s.fmax;
+            %For Even number of sample points if E(f=0) @ zero!
+%             s.flength=length(s.f);
+%             s.f=linspace(-s.fmax,s.fmax,s.flength-1);
         s.flength=length(s.f);
-        s.fmid=s.f(round(s.flength/2));
+        s.indexfmid=round(s.flength/2);
         s.freal=s.f+beam.f0;
         s.fbound=find(s.f>0,1);
         %wavelength

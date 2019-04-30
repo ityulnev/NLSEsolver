@@ -4,16 +4,16 @@
 % Source: 
 % (J. H. WILLIAMSON, 'Low-Storage Runge-Kutta Schemes',JOURNAL OF
 % COMPUTATIONAL PHYSICS, 1980)
-function [Erf]=do_LowStoreRK(mesh,pulse,beam,fiber,Erf,M_fd,h)
+function [Erf]=do_LowStoreRK(mesh,pulse,beam,medium,Erf,M_fd,h)
 %RK Coefficients
 a_rk=[0, -5/9,-153/128];
 b_rk=[1/3, 15/16, 8/15];
 q=0;
 %Calc Phase of reflected wave e(ikh)
     for mm=1:3
-    q=h.*calc_mainfunctionRK(mesh,pulse,beam,fiber,Erf,M_fd)+a_rk(mm).*q;   
+    q=h.*calc_mainfunctionRK(mesh,pulse,beam,medium,Erf,M_fd)+a_rk(mm).*q;   
     Erf=Erf+b_rk(mm).*q;
-    [Erf]=set_boundaries(mesh,pulse,fiber,Erf,M_fd,mm);
+    [Erf]=set_boundaries(mesh,pulse,medium,Erf,M_fd,mm);
 % kkr=log(Erf(2:end,pulse.pfmid)./Erf(1:end-1,pulse.pfmid))./(1i);
 % plot(mesh.r(2:end),[real(kkr)./mesh.dr]); legend([num2str(kkr(end)./mesh.dr)])
 % pause(0.1);

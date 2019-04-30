@@ -33,7 +33,7 @@ myerrorZ=1;
 %         energy2=trapz(mesh.r,transpose(mesh.r).*trapz(mesh.f,abs(Erf2).^2,2),1);
         myerrorZ=abs(max1-max2)/max1;
         epsilon=1e-6;
-        if myerrorZ<epsilon*0.1
+        if myerrorZ<epsilon*0.01
             Erf=Erf1;
             zprop=zprop+dh;
             dh=dh*2;
