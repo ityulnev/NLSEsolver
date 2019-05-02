@@ -13,11 +13,11 @@ classdef pulse_init
         s.w0=beam.w0.*s.order;                                              %center frequency
         s.t0=t0;                                                            %time delay in s
         timedelay=-(t0*1i*2*pi.*(mesh.f));                                  %phase from time delay     
-        s.carrier=0;%1i*s.w0.*mesh.t;                                          %Oscillation of carrier wave with w0 center frequency
+        s.carrier=1i*s.w0.*mesh.t;                                       %Oscillation of carrier wave with w0 center frequency
         %% calculate pulse
         ef=exp(-(2*pi.*(mesh.f)).^2.*s.tau0^2./2-timedelay);
         et=myifft(ef,mesh);
-        et=et.*exp(s.carrier);                                              %Excluded carrier wave for now...
+%         et=et.*exp(s.carrier);                                              %Excluded carrier wave for now...
         s.A0=sqrt(beam.Fluence/(sum(medium.Iconst.*abs(et).^2)*mesh.dt));
         n_gaussian=1;                                                       %Gaussian order
         er=exp(-(((mesh.r).^2./((beam.r_mode)^2))).^n_gaussian);

@@ -2,7 +2,7 @@
 classdef mesh_init
     
     properties
-    Lz,dz,z,zlength,fmax,df,indexfmid,f,flength,fmin,freal,t,dt,R,dr,r,rlength,wvl,dwvl,rmin,fbound,rmid,tmid,test
+    Lz,dz,z,zlength,fmax,df,indexfmid,f,flength,fmin,freal,t,dt,R,dr,r,rlength,wvl,dwvl,rmin,fbound,rmid,tmid,test,mode
     end
     
    methods 
@@ -17,13 +17,11 @@ classdef mesh_init
         s.df=1e11;
         s.fmin=1e11;
         s.f=-s.fmax:s.df:s.fmax;
-            %For Even number of sample points if E(f=0) @ zero!
-%             s.flength=length(s.f);
-%             s.f=linspace(-s.fmax,s.fmax,s.flength-1);
         s.flength=length(s.f);
         s.indexfmid=round(s.flength/2);
         s.freal=s.f+beam.f0;
-        s.fbound=find(s.f>0,1);
+        s.fbound=find(s.f==0,1,'last');
+        
         %wavelength
         s.wvl=const.c./s.f(s.fbound:end);
         s.dwvl=abs(s.wvl(2)-s.wvl(1));
@@ -50,6 +48,7 @@ classdef mesh_init
         s.rmid=round(s.rlength/2);
         %% check for energy conservation in myfft and myifft
         s.test='yes';
+        s.mode='debug'; %'debug' or 'cluster'
        end
 
    end
