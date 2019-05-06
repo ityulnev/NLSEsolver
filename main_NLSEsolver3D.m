@@ -10,8 +10,8 @@ pulse=pulse_init(mesh,beam,medium,0,1);% calculate pulse        #Set(Et(t,r,z=0)
 comment='Divergence propagation';
 boundcon="openCorrected"; %'openCorrected'
 for bc=boundcon
-[Erf,Erz,zprop,dQhist]=do_FourierSplitStep2D(mesh,beam,medium,pulse,bc,comment);
+[Erf,Erz,zprop,dQhist,whist]=do_FourierSplitStep2D(mesh,beam,medium,pulse,bc,comment);
 end
 
-save('02052019divTest1.mat');
+save([date,'Test1.mat']);
 
