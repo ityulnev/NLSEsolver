@@ -25,12 +25,9 @@ DIV=(-1i./(2.*(medium.k+medium.k0))).*Etrans;
 % DIV(abs(DIV)<max(max(abs(DIV),[],1),[],2).*1e-6)=0;
 DIV(isinf(DIV))=0;
 DIV(isnan(DIV))=0;
-%% Take care of Error with smoothing function
-Imax=max(abs(Erf(1,:)).^2);
-smoothbound=find(abs(Erf(1,:).^2)>Imax.*1e-9,1);
-halfwidth=mesh.df*abs(mesh.fbound-smoothbound);
-smoothfct=calc_supergaussian(mesh.f,halfwidth,10);
-DIV=DIV.*smoothfct;
+%% Take care of Error with smoothing functions
+[r_smoothfct,f_smoothfct]=get_smoothfunction(mesh,Erf,'supergaussian');
+DIV=DIV.*r_smoothfct.*f_smoothfct;
 
 %%
 NL=0;
