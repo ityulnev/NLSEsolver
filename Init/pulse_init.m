@@ -13,7 +13,7 @@ classdef pulse_init
         s.w0=beam.w0.*s.order;                                              %center frequency
         s.t0=t0;                                                            %time delay in s
         timedelay=-(t0*1i*2*pi.*(mesh.f));                                  %phase from time delay     
-        s.carrier=1i*s.w0.*mesh.t;                                       %Oscillation of carrier wave with w0 center frequency
+        s.carrier=1i*s.w0.*(mesh.t-s.t0);                                       %Oscillation of carrier wave with w0 center frequency
         %% calculate pulse
         ef=exp(-(2*pi.*(mesh.f)).^2.*s.tau0^2./2-timedelay);
         et=myifft(ef,mesh);
@@ -26,12 +26,10 @@ classdef pulse_init
         s.Erf=myfft(s.Ert,mesh);
         s.Erf=abs(s.Erf);
         s.Irt=medium.Iconst.*abs(s.Ert).^2;
-        s.Irf=medium.Iconst.*abs(s.Erf).^2;
-        
+        s.Irf=medium.Iconst.*abs(s.Erf).^2;       
         %find peak position in time and frequency
         s.ptmid=find(max(s.Irt(1,:))==s.Irt(1,:));
         s.pfmid=find(max(s.Irf(1,:))==s.Irf(1,:));
-
         %% Calculate Pulse energy and Test       
         if size(s.Ert,1)>1
             s.Energy=2*pi.*trapz(mesh.r,transpose(mesh.r).*trapz(mesh.t,s.Irt,2),1);
@@ -40,7 +38,6 @@ classdef pulse_init
             s.Energy=medium.area_hcf.*trapz(mesh.t,s.Irt); 
             s.Energyf=medium.area_hcf.*trapz(mesh.f,s.Irf); 
         end
-
         %test the energy conservation
         tolerance=1e-4;%set arbitrary tolerance
         test_errorMSG(abs(s.Energyf-s.Energy)/s.Energy >tolerance,'pulse_init: Energy of Et and Ef not conserved!')

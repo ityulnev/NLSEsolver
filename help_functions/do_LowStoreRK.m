@@ -10,13 +10,12 @@ a_rk=[0, -5/9,-153/128];
 b_rk=[1/3, 15/16, 8/15];
 q=0;
 %Calc Phase of reflected wave e(ikh)
+Eprev=[Erf(1:2,:);Erf(end-1:end,:)];
     for mm=1:3
     q=h.*calc_mainfunctionRK(mesh,pulse,beam,medium,Erf,M_fd)+a_rk(mm).*q;   
     Erf=Erf+b_rk(mm).*q;
-    [Erf]=set_boundaries(mesh,pulse,medium,Erf,M_fd,mm);
+    [Erf]=set_boundaries(mesh,pulse,medium,Erf,M_fd,mm,Eprev);
     end  
-Erf(isnan(Erf))=0;
-Erf(isinf(Erf))=0;
 end
 
 

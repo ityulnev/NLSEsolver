@@ -9,7 +9,7 @@ classdef mesh_init
        function s=mesh_init(beam,Lz,dim)
         %z propagation
         s.Lz=Lz;%[m]
-        s.dz=5e-6;
+        s.dz=0.5e-6;
         s.z=0:s.dz:s.Lz;
         s.zlength=length(s.z);
         %frequency domain
@@ -24,7 +24,7 @@ classdef mesh_init
         
         %wavelength
         s.wvl=const.c./s.f(s.fbound:end);
-        s.dwvl=abs(s.wvl(2)-s.wvl(1));
+        s.dwvl=abs(s.wvl(3)-s.wvl(2));
         %time domain
         s.t=linspace(-1/(2*s.df),1/(2*s.df),s.flength);%[s]
         s.dt=abs(s.t(2)-s.t(1));
@@ -34,9 +34,9 @@ classdef mesh_init
             case 1
                 s.r=0;
             case 2%3D with cylinder symmetry!
-                s.R=400e-6;%800e-6;%[m]
-                s.dr=1e-6;
-                s.rmin=s.dr*3;
+                s.R=90e-6;%800e-6;%[m]
+                s.dr=0.5e-6;
+                s.rmin=s.dr*2;
                 s.r=s.rmin:s.dr:s.R;%start at r0=3*dr to avoid singularity at r0=0! 
         end
         if s.R<beam.r_mode

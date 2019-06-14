@@ -35,6 +35,7 @@ classdef medium_init
         s.kGVD(mesh.flength-dfbound)=0;
 %         s.kTOD=[diff(s.kGVD)./(mesh.df*2*pi),0];
 
+
         end
     end
 end

@@ -16,8 +16,10 @@ counter=0;
 h=mesh.dz;
 zprop=0;
 dQhist=0;
+m=0;
 whist=mesh.dr*2+(find(abs(pulse.Erf(:,pulse.pfmid)).^2<abs(pulse.Erf(1,pulse.pfmid))^2/exp(2),1)-1)*mesh.dr;
-    while zprop<(rayl.zr*3)
+    while zprop<(rayl.zr*2)
+        m=m+1;
             %SST+SPM+DIV+ION via Runge Kutta
             [Erf]=do_LowStoreRK(mesh,pulse,beam,medium,Erf,M_fd,h);
             condition1=sum(sum(isinf(Erf),1),2)>=1;
@@ -38,17 +40,15 @@ whist=mesh.dr*2+(find(abs(pulse.Erf(:,pulse.pfmid)).^2<abs(pulse.Erf(1,pulse.pfm
                 dQhist=[dQhist,dQ];
                 waist=mesh.dr*2+(find(abs(Erf(:,pulse.pfmid)).^2<abs(Erf(1,pulse.pfmid))^2/exp(2),1)-1)*mesh.dr;
                 whist=[whist,waist];
-
-%                 condition=dQ>0.1;
-%                 test_errorMSG(condition,'Error in Pulse energy')
-%                 plot(mesh.r,[matTprop(:,1),matTprop(:,end)]); legend('Initial','Propagated');
-%                 title(['z=',num2str(zprop*1000),'mm','  ','Qout=',num2str(Q*1000),'mJ','  ','dQ=',num2str(dQ)]);
-%                 pause(0.1);
+                subplot(2,2,[1 2])
+                plot(mesh.r,[matTprop(:,1),matTprop(:,end)]); legend('Initial','Propagated');
+                title(['z=',num2str(zprop*1000),'mm','  ','Qout=',num2str(Q*1000),'mJ','  ','dQ=',num2str(dQ)]);
+                pause(0.1);
             end                    
             %% plot
 %             Qout=2*pi.*trapz(mesh.r,transpose(mesh.r).*trapz(mesh.f,medium.Iconst.*abs(Erf).^2,2),1);
 %             plot(mesh.r,[abs(pulse.Ert(:,mesh.tmid)).^2,abs(Ert(:,mesh.tmid)).^2])
-%             plot(mesh.f,[abs(pulse.Erf(end,:)).^2;abs(Erf(end,:)).^2]); xlim([3e14 5e14]) 
+%             plot(mesh.f,[abs(pulse.Erf(1,:)).^2;abs(Erf(1,:)).^2]); xlim([-3e14 3e14]) 
 %             plot(mesh.t,[abs(pulse.Ert(1,:)).^2;abs(Ert(1,:)).^2]); xlim([-1e-13 1e-13])
 %             imagesc(mesh.f,mesh.r,abs(Erf).^2); xlim([1e14 6e14])       
 %             imagesc(mesh.t,mesh.r,abs(myifft(Erf,mesh)).^2); xlim([-1e-13 1e-13])   
@@ -60,7 +60,7 @@ whist=mesh.dr*2+(find(abs(pulse.Erf(:,pulse.pfmid)).^2<abs(pulse.Erf(1,pulse.pfm
                         dd=errordlg('Stopped due to Error','Warning');
                         uiwait(dd)
                     case 'cluster'
-                        save(date,'savefromError.mat','mesh','pulse','beam','Erf','matTprop','zprop','dQhist','rayl','whist');
+                        save([date,'savefromerror.mat'],'mesh','pulse','beam','matTprop','Erf','zprop','dQhist','rayl','whist','boundary');
                         quit;
                 end
             end
