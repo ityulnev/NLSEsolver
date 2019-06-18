@@ -37,6 +37,6 @@ prod=w_factor.*exponent;
 
 W_adk=f/(8*pi*n_star).*((4*exp(1)*E_0_au./(n_star)).^(2*n_star)).*sqrt(3./(pi*E_0_au*(2*Eg_au))).*prod;  %Ionization rate
 P_adk=1-exp(-dt_atu.*W_adk);                                               %Ioniz. propability
-n_e=cumsum(n_gas.*(P_adk),2);                                                %Electron density
+n_e=cumsum(n_gas.*(P_adk),2);                                              %Electron density
 
 end
