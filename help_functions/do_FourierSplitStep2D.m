@@ -40,10 +40,12 @@ whist=mesh.dr*2+(find(abs(pulse.Erf(:,pulse.pfmid)).^2<abs(pulse.Erf(1,pulse.pfm
                 dQhist=[dQhist,dQ];
                 waist=mesh.dr*2+(find(abs(Erf(:,pulse.pfmid)).^2<abs(Erf(1,pulse.pfmid))^2/exp(2),1)-1)*mesh.dr;
                 whist=[whist,waist];
-                subplot(2,2,[1 2])
-                plot(mesh.r,[matTprop(:,1),matTprop(:,end)]); legend('Initial','Propagated');
-                title(['z=',num2str(zprop*1000),'mm','  ','Qout=',num2str(Q*1000),'mJ','  ','dQ=',num2str(dQ)]);
-                pause(0.1);
+                if strcmp(globproperties.mode,'debug')
+                    subplot(3,2,[1 2])
+                    plot(mesh.r,[matTprop(:,1),matTprop(:,end)]); legend('Initial','Propagated');
+                    title(['z=',num2str(zprop*1000),'mm','  ','Qout=',num2str(Q*1000),'mJ','  ','dQ=',num2str(dQ)]);
+                    pause(0.1);
+                end
             end                    
             %% plot
 %             Qout=2*pi.*trapz(mesh.r,transpose(mesh.r).*trapz(mesh.f,medium.Iconst.*abs(Erf).^2,2),1);
@@ -55,12 +57,13 @@ whist=mesh.dr*2+(find(abs(pulse.Erf(:,pulse.pfmid)).^2<abs(pulse.Erf(1,pulse.pfm
 %             title(['z=',num2str(zprop)]);
 %             pause(0.1)
             if strcmp(lastwarn,'myErrorID')
-                switch mesh.mode
+                switch globproperties.mode
                     case 'debug'
                         dd=errordlg('Stopped due to Error','Warning');
                         uiwait(dd)
                     case 'cluster'
-                        save([date,'savefromerror.mat'],'mesh','pulse','beam','matTprop','Erf','zprop','dQhist','rayl','whist','boundary');
+                        %save([date,'savefromerror.mat'],'mesh','pulse','beam','matTprop','Erf','zprop','dQhist','rayl','whist','boundary');
+                        save([date,'savefromerror.mat'],'mesh','m','zprop','matTprop')
                         quit;
                 end
             end

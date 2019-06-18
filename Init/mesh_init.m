@@ -9,12 +9,12 @@ classdef mesh_init
        function s=mesh_init(beam,Lz,dim)
         %z propagation
         s.Lz=Lz;%[m]
-        s.dz=0.5e-6;
+        s.dz=5e-6;
         s.z=0:s.dz:s.Lz;
         s.zlength=length(s.z);
         %frequency domain
-        s.fmax=beam.f0*2;%[1/s]
-        s.df=1e11;
+        s.fmax=beam.f0*4;%[1/s]
+        s.df=0.5e11;
         s.fmin=1e11;
         s.f=-s.fmax:s.df:s.fmax;
         s.flength=length(s.f);
@@ -34,7 +34,7 @@ classdef mesh_init
             case 1
                 s.r=0;
             case 2%3D with cylinder symmetry!
-                s.R=90e-6;%800e-6;%[m]
+                s.R=100e-6;%800e-6;%[m]
                 s.dr=0.5e-6;
                 s.rmin=s.dr*2;
                 s.r=s.rmin:s.dr:s.R;%start at r0=3*dr to avoid singularity at r0=0! 
@@ -46,9 +46,6 @@ classdef mesh_init
         end
         s.rlength=length(s.r); 
         s.rmid=round(s.rlength/2);
-        %% check for energy conservation in myfft and myifft
-        s.test='yes';
-        s.mode='debug'; %'debug' or 'cluster'
        end
 
    end

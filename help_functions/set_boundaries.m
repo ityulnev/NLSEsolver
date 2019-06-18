@@ -47,7 +47,12 @@ end
 %%
 % [r_smoothfct,f_smoothfct]=get_smoothfunction(mesh,Erf,'supergaussian');
 % Erf=abs(Erf).*f_smoothfct.*exp(1i.*unwrap(angle(Erf)).*f_smoothfct);
-subplot(2,2,[3 4])
-plot(mesh.f,[(angle(Erf(1:3,:)))]); xlim([-1e14 1e14])
-pause(0.1);
+if strcmp(globproperties.mode,'debug')
+    subplot(3,2,[3 4])
+    plot(mesh.f,[(angle(Erf(1:3,:)))]); xlim([-1e14 1e14])
+    subplot(3,2,[5 6])
+    plot(mesh.f,[(angle(Erf(end-2:end,:)))]); xlim([-1e14 1e14])
+    pause(0.1);
+end
+
 end
