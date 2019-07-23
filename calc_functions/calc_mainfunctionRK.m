@@ -7,15 +7,15 @@ SPM=-1i*(2*pi.*beam.f0.*medium.n2/const.c).*medium.Iconst.*abs(Et).^2;
 % SPMSST=(2*pi.*(mesh.f))./(pulse.w0).*myfft((SPM.*Et),mesh);%
 % SPMSST(abs(SPMSST)<1e-10.*max(max(abs(SPMSST))))=0;%take care of numerical errors which might occur            
 %% Ionization with ADK model // Energy loss via Ionization
-[n_e,Eg]=calc_2DeDensityADK(Et,mesh,medium);
-% dNedt=diff(n_e,1,2)./mesh.dt;
-% dNedt=[dNedt,zeros(mesh.rlength,1)];
-% ION=-Eg.*dNedt./(2.*medium.Iconst.*abs(Et).^2);
-% ION(isnan(ION))=0;%0/0 is NaN ** @zero intensity all should be zero!
+[n_e,Eg]=calc_2DeDensityADK(Et.*exp(pulse.carrier),mesh,medium,beam);
+dNedt=diff(n_e,1,2)./mesh.dt;
+dNedt=[dNedt,zeros(mesh.rlength,1)];
+ION=-Eg.*dNedt./(2.*medium.Iconst.*abs(0.5.*(Et.*exp(pulse.carrier)+conj(Et.*exp(pulse.carrier)))).^2);
+ION(isnan(ION))=0;%0/0 is NaN ** @zero intensity all should be zero!
 %% Plasma Defocusing
 wp2=const.e^2.*n_e./(const.eps0*const.m_e);
 PLSM=(1i*pulse.w0/const.c).*wp2./(2.*pulse.w0.^2);
-NL=myfft((SPM+PLSM).*Et,mesh);
+NL=myfft((SPM+PLSM+ION).*Et,mesh);
 %% Group velocity dispersion
 % GVD=-1i.*(2*pi.*mesh.f-pulse.w0).^2.*medium.kGVD(pulse.pfmid)./2;
 %% Divergence in cylinder coordinates

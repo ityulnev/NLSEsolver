@@ -2,18 +2,21 @@
 classdef pulse_init
     
     properties
-    w0,t_fwhm,tau0,t0,Ert,carrier,A0,Energy,Erf,Energyf,order,Irf,Irt,pfmid,ptmid
+    w0,t_fwhm,tau0,t0,Ert,carrier,A0,Energy,Erf,Energyf,order,Irf,Irt,pfmid,ptmid,fwhmF,fwhmT
     end
     
     methods
         function s=pulse_init(mesh,beam,medium,t0,order)
         s.order=order;                                                      %order: harmonic number
         s.t_fwhm=beam.t_fwhm/sqrt(s.order);                                 %Pulse Duration @ FWHM
-        s.tau0=s.t_fwhm/(2*sqrt(log(2)));                                   %pulse duration @ tau0 (Gaussian variance)
+        %fwhm = tau@Imax/2
+%         s.tau0=s.t_fwhm/(2*sqrt(log(2)));                                 %pulse duration @ tau0 (Gaussian variance)
+        %fwhm = tau@Imax/e^2
+        s.tau0=s.t_fwhm/(2*sqrt(2));                                        %pulse duration @ tau0 (Gaussian variance)
         s.w0=beam.w0.*s.order;                                              %center frequency
         s.t0=t0;                                                            %time delay in s
         timedelay=-(t0*1i*2*pi.*(mesh.f));                                  %phase from time delay     
-        s.carrier=1i*s.w0.*(mesh.t-s.t0);                                       %Oscillation of carrier wave with w0 center frequency
+        s.carrier=1i*s.w0.*(mesh.t-s.t0);                                   %Oscillation of carrier wave with w0 center frequency
         %% calculate pulse
         ef=exp(-(2*pi.*(mesh.f)).^2.*s.tau0^2./2-timedelay);
         et=myifft(ef,mesh);
@@ -43,10 +46,10 @@ classdef pulse_init
         test_errorMSG(abs(s.Energyf-s.Energy)/s.Energy >tolerance,'pulse_init: Energy of Et and Ef not conserved!')
 
         %test the time bandwidth product
-        fwhmF=calc_fwhm(mesh.f,s.Irf(1,:));
-        fwhmT=calc_fwhm(mesh.t,s.Irt(1,:));
+        s.fwhmF=calc_fwhm(mesh.f,s.Irf(1,:));
+        s.fwhmT=calc_fwhm(mesh.t,s.Irt(1,:));
         tolerance=2e-2;%set arbitrary tolerance
-        test_errorMSG(abs(fwhmT*fwhmF-0.44)/0.44 >tolerance,'pulse_init: FWHM of Et and Ef not conserved!')
+        test_errorMSG(abs(s.fwhmT*s.fwhmF-0.44)/0.44 >tolerance,'pulse_init: FWHM of Et and Ef not conserved!')
         end
     end
 end
