@@ -18,7 +18,7 @@ zprop=0;
 dQhist=0;
 m=0;
 whist=mesh.dr*2+(find(abs(pulse.Erf(:,pulse.pfmid)).^2<abs(pulse.Erf(1,pulse.pfmid))^2/exp(2),1)-1)*mesh.dr;
-    while zprop<(rayl.zr*2)
+    while zprop<(mesh.Lz)
         m=m+1;
             %SST+SPM+DIV+ION via Runge Kutta
             [Erf]=do_LowStoreRK(mesh,pulse,beam,medium,Erf,M_fd,h);
