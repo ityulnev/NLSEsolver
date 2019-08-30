@@ -7,10 +7,10 @@ SPM=-1i*(2*pi.*beam.f0.*medium.n2/const.c).*medium.Iconst.*abs(Et).^2;
 % SPMSST=(2*pi.*(mesh.f))./(pulse.w0).*myfft((SPM.*Et),mesh);%
 % SPMSST(abs(SPMSST)<1e-10.*max(max(abs(SPMSST))))=0;%take care of numerical errors which might occur            
 %% Ionization with ADK model // Energy loss via Ionization
-[n_e,Eg]=calc_2DeDensityADK(Et.*exp(pulse.carrier),mesh,medium,beam);
+[n_e,Eg,n_gas]=calc_2DeDensityADK(Et,mesh,medium,beam,pulse);
 dNedt=diff(n_e,1,2)./mesh.dt;
 dNedt=[dNedt,zeros(mesh.rlength,1)];
-ION=-Eg.*dNedt./(2.*medium.Iconst.*abs(0.5.*(Et.*exp(pulse.carrier)+conj(Et.*exp(pulse.carrier)))).^2);
+ION=-Eg.*dNedt./(2.*medium.Iconst.*abs(Et).^2);
 ION(isnan(ION))=0;%0/0 is NaN ** @zero intensity all should be zero!
 %% Plasma Defocusing
 wp2=const.e^2.*n_e./(const.eps0*const.m_e);
