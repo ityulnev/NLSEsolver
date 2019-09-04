@@ -44,7 +44,7 @@ title('SPM+Plasma, open BC')
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%
 figure;
-set(0,'defaultAxesFontSize',30)
+set(0,'defaultAxesFontSize',10)
 imagesc(mesh.f.*1e-12,mesh.r.*1e6,abs(Erf).^2)
 xlabel('frequency f (THz)')
 ylabel('radius r (µm)')

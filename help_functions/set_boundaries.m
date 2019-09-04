@@ -49,9 +49,9 @@ end
 % Erf=abs(Erf).*f_smoothfct.*exp(1i.*unwrap(angle(Erf)).*f_smoothfct);
 if strcmp(globproperties.mode,'debug')
     subplot(3,2,[3 4])
-    plot(mesh.f,[(angle(Erf(1:3,:)))]); xlim([-2e14 2e14])
+    plot(mesh.f,[(angle(Erf(1:3,:)))]); xlim([-0.1e14 3.5e14])
     subplot(3,2,[5 6])
-    plot(mesh.f,[(angle(Erf(end-2:end,:)))]); xlim([-2e14 2e14])
+    plot(mesh.f,[(angle(Erf(end-2:end,:)))]); xlim([-0.1e14 3e14])
     pause(0.1);
 end
 

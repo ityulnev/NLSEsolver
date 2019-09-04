@@ -2,7 +2,7 @@
 classdef mesh_init
     
     properties
-    Lz,dz,z,zlength,fmax,df,indexfmid,f,flength,fmin,freal,t,dt,R,dr,r,rlength,wvl,dwvl,rmin,fbound,rmid,tmid,test,mode
+    Lz,dz,z,zlength,fmax,df,indexfmid,f,flength,fmin,freal,f0bound,t,dt,R,dr,r,rlength,wvl,dwvl,rmin,fbound,rmid,tmid,test,mode,tanhfilterL,tanhfilterR,tanhfilterLR
     end
     
    methods 
@@ -20,8 +20,8 @@ classdef mesh_init
         s.flength=length(s.f);
         s.indexfmid=round(s.flength/2);
         s.freal=s.f+beam.f0;
-        s.fbound=find(s.f==0,1,'last');
-        
+        s.fbound=find(s.f>0,1,'first');
+        s.f0bound=find(s.f>beam.f0,1,'first')-1;
         %wavelength
         s.wvl=const.c./s.f(s.fbound:end);
         s.dwvl=abs(s.wvl(3)-s.wvl(2));
@@ -46,7 +46,10 @@ classdef mesh_init
         end
         s.rlength=length(s.r); 
         s.rmid=round(s.rlength/2);
+       %% tanh(x) filter
+       s.tanhfilterL=calc_tanhfilter((2*pi.*s.f-beam.w0).*s.t,s.indexfmid);
+       s.tanhfilterR=fliplr(ifftshift(s.tanhfilterL));
+       s.tanhfilterLR=s.tanhfilterL.*s.tanhfilterR;
        end
-
    end
 end

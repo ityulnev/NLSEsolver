@@ -3,7 +3,7 @@
 %Implemented Effects: GVD, SPM, Attenuation, Ionization(Defocusing & Loss)
 function [Erf,matTprop,zprop,Qhist,whist,IonizLvl]=do_FourierSplitStep2D(mesh,beam,medium,pulse,boundary,comment)
 
-rayl=calc_zrayleigh(beam,mesh,pulse,0);
+rayl=calc_zrayleigh(beam,mesh,medium,pulse,0);
 wprop=calc_wprop(rayl.win,rayl.zr,rayl.zr);
 
 %Build vector-analogon to finite difference matrix M_fd
@@ -17,8 +17,8 @@ zprop=0;
 Qhist=pulse.Energy;
 m=0;
 whist=mesh.dr*2+(find(abs(pulse.Erf(:,pulse.pfmid)).^2<abs(pulse.Erf(1,pulse.pfmid))^2/exp(2),1)-1)*mesh.dr;
-[n_e,Eg,n_gas]=calc_2DeDensityADK(pulse.Ert,mesh,medium,beam,pulse);
-IonizLvl=max(n_e(1,:))/n_gas;
+[n_e]=calc_2DeDensityADK(pulse.Ert,mesh,medium,beam,pulse);
+IonizLvl=max(n_e(1,:))/medium.n_gas;
 
     while zprop<(mesh.Lz)
 %%        
@@ -51,7 +51,7 @@ IonizLvl=max(n_e(1,:))/n_gas;
                 end
                 %% Ionization level
                 [n_e]=calc_2DeDensityADK(Ert,mesh,medium,beam,pulse);
-                IonizLvl=[IonizLvl,max(n_e(1,:))/n_gas];
+                IonizLvl=[IonizLvl,max(n_e(1,:))/medium.n_gas];
             end                    
             
             
@@ -63,7 +63,7 @@ IonizLvl=max(n_e(1,:))/n_gas;
                         uiwait(dd)
                     case 'cluster'
                         %save([date,'savefromerror.mat'],'mesh','pulse','beam','matTprop','Erf','zprop','dQhist','rayl','whist','boundary');
-                        save([date,'savefromerror.mat'],'mesh','m','zprop','matTprop')
+                        save([date,'savefromerror.mat'],'mesh','beam','m','zprop','matTprop','pulse','boundary')
                         quit;
                 end
             end

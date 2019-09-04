@@ -5,8 +5,6 @@ Valid for multicycle pulses propagating in isotrope media like gases.
 
 Included: Selfphase Modulation + Self focusing, GVD, Divergence, Ionizationloss, Plasma defocusing+ Blue Shift
 
-This version 'No_Carrier' takes input electric field without the carrier i*w0*t oscillation to reduce the fineness of the mesh in time. This reduces the arrays sizes in f and t drastically and improves calculation speed a lot. 
-
-
+This version takes as input the envelope with carrier wave iw0t, so the forward propagating complex electric field. With this ionization is calculated dependent for each half cycle of the pulse. This makes the simulation more correct for few-cycle pulses
 
 

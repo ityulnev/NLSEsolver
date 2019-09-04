@@ -10,9 +10,9 @@ rbound=find(abs(Erf(:,imaxf).^2)<maxr/exp(2),1);
 fbound=find(abs(Erf(imaxr,:).^2)>maxf/exp(2),1);
 
 halfwidthR=mesh.dr*abs(rbound)+(mesh.rmin-mesh.dr);
-halfwidthF=mesh.df*abs(mesh.fbound-fbound);
-% LRbounds=find_bounds(Erf);
-% halfwidthF=mesh.df.*(LRbounds(:,2)-LRbounds(:,1));
+% halfwidthF=mesh.df*abs(mesh.fbound-fbound);
+LRbounds=find_bounds(Erf);
+halfwidthF=mesh.df.*(LRbounds(1,3)-LRbounds(1,1));
 
 
 if isempty(rbound)
@@ -24,9 +24,9 @@ end
 %calculate the smoothing function
 switch type
     case 'supergaussian'
-    r_smoothfct=calc_supergaussian(mesh.r,halfwidthR.*3.5,10);
+    r_smoothfct=calc_supergaussian(mesh.r,halfwidthR.*3.5,10,0);
     r_smoothfct=r_smoothfct';
-    f_smoothfct=calc_supergaussian(mesh.f,halfwidthF.*4,10);
+    f_smoothfct=calc_supergaussian(mesh.f,halfwidthF,10,mesh.df*(LRbounds(1,2)-mesh.indexfmid));
 end
 
 end

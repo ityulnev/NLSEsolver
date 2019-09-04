@@ -7,6 +7,10 @@ switch gas
     case 'Neon'
     %Refractive Index at T=273.14[K] and 1.01325[bar] (101325Pa)
     ref_n=1+0.00128145./(184.661-wavelength.^(-2))+0.0220486./(376.84-wavelength.^(-2)); %https://refractiveindex.info/?shelf=main&book=Ne&page=Bideau-Mehu
+    case 'Neon_n2'
+    %n0+n2*Ipeak for pressure scaling of n2     
+    ref_n=1+0.00128145./(184.661-wavelength.^(-2))+0.0220486./(376.84-wavelength.^(-2));
+    ref_n=ref_n+7.5e-25*2.224e18;
 end
 
 %calculate Polarizability alpha for reference conditions with https://de.wikipedia.org/wiki/Clausius-Mossotti-Gleichung

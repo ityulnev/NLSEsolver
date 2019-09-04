@@ -2,7 +2,7 @@
 classdef beam_init
 
     properties
-    wavelength,f0,w0,Q_In,Q_Out,t_fwhm,r_mode,area_mode,Fluence,alpha,n_cycles
+    wavelength,f0,w0,Q_In,Q_Out,t_pulse,t_fwhm,r_mode,area_mode,Fluence,alpha,n_cycles
     end
     
     methods 
@@ -10,10 +10,11 @@ classdef beam_init
         s.wavelength=2000e-9;%[m]
         s.f0=const.c/s.wavelength;
         s.w0=2*pi*s.f0;
-        s.n_cycles=3;
-        s.t_fwhm=s.n_cycles/s.f0;%[s] Pulse duration
+        s.n_cycles=1;
+        s.t_pulse=s.n_cycles/s.f0;%[s] Pulse duration @ I/e2
+        s.t_fwhm=(s.n_cycles/s.f0)*sqrt(log(2)/2);%[s] Pulse duration @ I FWHM
         
-        s.Q_In=2.1e-3*(s.n_cycles/3);%[J] Pulse energy going in
+        s.Q_In=2e-3*(s.n_cycles/3);%[J] Pulse energy going in
         %Note: Scaling for const Peak Intensity ~4.033e18W/m^2 for any Cyclenumber!
         s.Q_Out=1e-3;%[J] Pulse energy out        
         
