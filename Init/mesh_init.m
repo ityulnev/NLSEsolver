@@ -13,8 +13,8 @@ classdef mesh_init
         s.z=0:s.dz:s.Lz;
         s.zlength=length(s.z);
         %frequency domain
-        s.fmax=beam.f0*24;%[1/s]
-        s.df=2e11;
+        s.fmax=beam.f0*150;%[1/s]
+        s.df=4e11;
         s.fmin=1e11;
         s.f=-s.fmax:s.df:s.fmax;
         s.flength=length(s.f);
@@ -35,7 +35,7 @@ classdef mesh_init
                 s.r=0;
             case 2%3D with cylinder symmetry!
                 s.R=150e-6;%800e-6;%[m]
-                s.dr=0.2e-6;
+                s.dr=2e-6;
                 s.rmin=s.dr*2;
                 s.r=s.rmin:s.dr:s.R;%start at r0=3*dr to avoid singularity at r0=0! 
         end

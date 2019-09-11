@@ -9,6 +9,6 @@ function []= test_errorMSG(condition,message)
             case 'cluster'
                 %nothing     
         end
-        warning('myErrorID')   
+        warning('myErrorID')
     end
 end

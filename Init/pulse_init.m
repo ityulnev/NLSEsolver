@@ -44,10 +44,11 @@ classdef pulse_init
         s.IpeakTheo=s.PpeakTheo/(beam.area_mode/2);%Peak intensity for Gaussian beam from peak power
         %% Test Peak Intensity        
         tolerance=1e-2;
-        if abs(s.IpeakTheo-s.Ipeak)/s.IpeakTheo <tolerance
+        Ipeak_error=abs(s.IpeakTheo-s.Ipeak)/s.IpeakTheo;
+        if  Ipeak_error<tolerance
             %do nothing  
         else
-            warning('pulse_init: Peak Intensity of Irt deviates from theory!')    
+            warning(['pulse_init: Peak Intensity of Irt deviates from theoretical Gaussian Ipeak by ',num2str(Ipeak_error.*100),'%'])    
         end        
         %% Calculate Pulse energy and Test       
         if size(s.Ert,1)>1
@@ -59,13 +60,21 @@ classdef pulse_init
         end
         %test the energy conservation
         tolerance=1e-4;%set arbitrary tolerance
-        test_errorMSG(abs(s.Energyf-s.Energy)/s.Energy >tolerance,'pulse_init: Energy of Et and Ef not conserved!')
-
+        energy_error=abs(s.Energyf-s.Energy)/s.Energy;
+%         test_errorMSG(fwhm_error>tolerance,'pulse_init: Energy of Et and Ef not conserved!')
+        if energy_error>tolerance
+            warning(['pulse_init: Energy conservation between Ef and Et deviate by ',num2str(energy_error.*100),'%'])    
+        end
         %test the time bandwidth product
         s.fwhmF=calc_fwhm(mesh.f,Irf(1,:));
         s.fwhmT=calc_fwhm(mesh.t,Irt(1,:));
         tolerance=2e-2;%set arbitrary tolerance
-        test_errorMSG(abs(s.fwhmT*s.fwhmF-0.44)/0.44 >tolerance,'pulse_init: FWHM of Et and Ef not conserved!')       
+        fwhm_error=abs(s.fwhmT*s.fwhmF-0.44)/0.44;
+%         test_errorMSG(abs(s.fwhmT*s.fwhmF-0.44)/0.44 >tolerance,'pulse_init: FWHM of Et and Ef not conserved!')  
+        if fwhm_error>tolerance
+%             warning(['pulse_init: FWHM product of Irt/Irf deviate from theoretical value by ',num2str(energy_error.*100),'%'])    
+                    warning(['pulse_init: FWHM product of Irt/Irf deviate from theoretical value by ',num2str(fwhm_error.*100),'%'])    
+        end
         end
     end
 end

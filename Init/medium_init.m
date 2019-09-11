@@ -58,10 +58,10 @@ classdef medium_init
         alpha=1.8962;
         s.P_crit=alpha.*beam.wavelength^2/(4*pi*s.n0*s.n2);   
         %% k with reduced noise from linear fit
-        Vf=mesh.indexfmid:mesh.flength;
-        [aa]=polyfit(mesh.f(Vf),s.k(Vf),1);
-        s.k_fit=[zeros(1,mesh.indexfmid-1),mesh.f(Vf).*aa(1,1)];
-        
+%         Vf=mesh.indexfmid:mesh.flength;
+%         [aa]=polyfit(mesh.f(Vf),s.k(Vf),1);
+%         s.k_fit=[zeros(1,mesh.indexfmid-1),mesh.f(Vf).*aa(1,1)];
+%         
         
         end
     end
