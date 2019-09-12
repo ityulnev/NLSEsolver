@@ -20,7 +20,7 @@ gaussfilter=calc_supergaussian(mesh.t,pulse.t_pulse.*5,10,0);  %mesh.dt.*round(m
 %% Group velocity dispersion
 const_GVD=-1i.*(2*pi.*mesh.f-pulse.w0).^2.*medium.k2_w0./2;
 %% Divergence in cylinder coordinates
-filpos=[zeros(1,mesh.indexfmid),ones(1,mesh.flength-mesh.indexfmid)];
+% filpos=[zeros(1,mesh.indexfmid),ones(1,mesh.flength-mesh.indexfmid)];
 % cutk=medium.k_fit;
 % cutk(mesh.indexfmid+1:mesh.indexfmid+200)=medium.k_fit(mesh.indexfmid+200);
 % Erf=handle_NaNInf((-1i./(2.*(medium.k0))).*do_2Dfinitedifference(mesh,medium,Erf,M_fd))+filpos.*(2*pi.*mesh.f).*myfft(-1i*(medium.n2/const.c).*medium.Iconst.*abs(E_opt).^2.*E_opt.*gaussfilter,mesh);
@@ -37,7 +37,7 @@ filpos=[zeros(1,mesh.indexfmid),ones(1,mesh.flength-mesh.indexfmid)];
 %% Time domain effects
 % E_opt=myfft(gaussfilter.*PLSM,mesh);
 % E_opt=myfft(gaussfilter.*(calc_mainFctOptimizeTime(beam,mesh,medium,pulse,Erf)),mesh);
-Ert=myifft(const_GVD.*myfft((Ert),mesh),mesh)+(calc_mainFctOptimizeTime(beam,mesh,medium,pulse,Ert))+(const.c/(2.*medium.n0)).*do_2Dfinitedifference(mesh,medium,cumsum(Ert.*mesh.dt,2),M_fd);
+Ert=handle_NaNInf(myifft(const_GVD.*myfft((Ert),mesh),mesh))+(calc_mainFctOptimizeTime(beam,mesh,medium,pulse,Ert))+(const.c/(2.*medium.n0)).*do_2Dfinitedifference(mesh,medium,cumsum(Ert.*mesh.dt,2),M_fd);
 % Erf=(const.c/(2.*medium.n0)).*do_2Dfinitedifference(mesh,medium,cumsum(Erf.*mesh.dt,2),M_fd);%(calc_mainFctOptimizeTime(beam,mesh,medium,pulse,E_opt))
 % LRbounds=find_bounds(Erf(1,:));
 % filgaussPLSM=calc_supergaussian(mesh.f,mesh.df*(LRbounds(1,3)-LRbounds(1,1)),10,mesh.df*(LRbounds(1,2)-mesh.indexfmid));

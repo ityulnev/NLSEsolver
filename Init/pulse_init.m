@@ -17,7 +17,7 @@ classdef pulse_init
         %% calculate pulse
         ef=exp(-(2*pi.*(mesh.f)).^2.*s.tau0^2./2-timedelay);
         et=myifft(ef,mesh);
-        et=et.*exp(s.carrier);                                              
+        et=et.*exp(s.carrier);
         s.A0=sqrt(beam.Fluence/(sum(medium.Iconst.*abs(et).^2)*mesh.dt));
         n_gaussian=1;                                                      %Gaussian order
         er=exp(-(((mesh.r).^2./((beam.r_mode)^2))).^n_gaussian);
@@ -31,7 +31,6 @@ classdef pulse_init
         s.Erf(:,1:mesh.indexfmid)=0;
         s.Ert=myifft(s.Erf,mesh);
         %% Intensity
-%         s.Erf=abs(s.Erf);
         Irt=medium.Iconst.*abs(s.Ert).^2;
         Irf=medium.Iconst.*abs(s.Erf).^2;         
         %find peak position in time and frequency

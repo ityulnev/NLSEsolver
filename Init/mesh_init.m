@@ -9,11 +9,11 @@ classdef mesh_init
        function s=mesh_init(beam,Lz,dim)
         %z propagation
         s.Lz=Lz;%[m]
-        s.dz=0.1e-6;
+        s.dz=0.5e-6;
         s.z=0:s.dz:s.Lz;
         s.zlength=length(s.z);
         %frequency domain
-        s.fmax=beam.f0*150;%[1/s]
+        s.fmax=beam.f0*100;%[1/s]
         s.df=4e11;
         s.fmin=1e11;
         s.f=-s.fmax:s.df:s.fmax;
@@ -47,7 +47,7 @@ classdef mesh_init
         s.rlength=length(s.r); 
         s.rmid=round(s.rlength/2);
        %% tanh(x) filter
-       s.tanhfilterL=calc_tanhfilter((2*pi.*s.f-beam.w0).*s.t,s.indexfmid);
+       s.tanhfilterL=calc_tanhfilter((beam.f0.*s.t),s.indexfmid);
        s.tanhfilterR=fliplr(ifftshift(s.tanhfilterL));
        s.tanhfilterLR=s.tanhfilterL.*s.tanhfilterR;
        end

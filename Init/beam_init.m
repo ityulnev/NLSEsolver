@@ -10,12 +10,12 @@ classdef beam_init
         s.wavelength=2000e-9;%[m]
         s.f0=const.c/s.wavelength;
         s.w0=2*pi*s.f0;
-        s.n_cycles=6;
+        s.n_cycles=3;
         s.t_pulse=s.n_cycles/s.f0;%[s] Pulse duration @ I/e2
         s.t_fwhm=(s.n_cycles/s.f0)*sqrt(log(2)/2);%[s] Pulse duration @ I FWHM
         
-        s.Q_In=0.4e-3*(s.n_cycles);%[J] Pulse energy going in %%1.9085e-3/3 for 14.97% ionization
-        %Note: Scaling for const Peak Intensity ~4.033e18W/m^2 for any Cyclenumber!
+        s.Q_In=0.4e-3*(s.n_cycles);%[J] Pulse energy going in %%1.9085e-3/3 for 14.79% ionization% 0.52385e-3*3 for 14.79%
+        %Note: Scaling for const Peak Intensity for any Cyclenumber!
         s.Q_Out=1e-3;%[J] Pulse energy out        
         
 %         factor=0.72;% some factor to vary the beams size - arbitrary!

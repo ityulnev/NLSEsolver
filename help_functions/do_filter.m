@@ -9,7 +9,11 @@ switch filtertype
     case 'tanhfilterL'
         myfilter=mesh.tanhfilterL;
     case 'tanhfilterR'
-        myfilter=mesh.tanhfilterR;       
+        myfilter=mesh.tanhfilterR;  
+    case 'tanhOuterLR'
+        tempfilter=mesh.tanhfilterR;
+        tempfilter(1:mesh.indexfmid)=1;
+        myfilter=tempfilter.*fliplr(tempfilter);
 end
 if strcmp('inF',domain)
     Er=myifft(myfilter.*myfft(Er,mesh),mesh);

@@ -16,7 +16,7 @@ h=mesh.dz;
 zprop=0;
 Qhist=pulse.Energy;
 m=0;
-whist=mesh.dr*2+(find(abs(pulse.Erf(:,pulse.pfmid)).^2<abs(pulse.Erf(1,pulse.pfmid))^2/exp(2),1)-1)*mesh.dr;
+whist=mesh.dr*2+(find(abs(pulse.Ert(:,pulse.ptmid)).^2<abs(pulse.Ert(1,pulse.ptmid))^2/exp(2),1)-1)*mesh.dr;
 [n_e]=calc_2DeDensityADK(pulse.Ert,mesh,medium,beam,pulse);
 IonizLvl=max(n_e(1,:))/medium.n_gas;
 
@@ -41,7 +41,7 @@ IonizLvl=max(n_e(1,:))/medium.n_gas;
                 Q=2*pi.*trapz(mesh.r,transpose(mesh.r).*matTprop(:,end));
                 dQ=(pulse.Energy-Q)/abs(pulse.Energy);
                 Qhist=[Qhist,Q];
-                waist=mesh.dr*2+(find(abs(Er(:,pulse.pfmid)).^2<abs(Er(1,pulse.pfmid))^2/exp(2),1)-1)*mesh.dr;
+                waist=mesh.dr*2+(find(abs(Er(:,pulse.ptmid)).^2<abs(Er(1,pulse.ptmid))^2/exp(2),1)-1)*mesh.dr;
                 whist=[whist,waist];
                 if strcmp(globproperties.mode,'debug')
                     subplot(4,2,[1 2])
