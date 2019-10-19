@@ -37,7 +37,11 @@ const_GVD=-1i.*(2*pi.*mesh.f-pulse.w0).^2.*medium.k2_w0./2;
 %% Time domain effects
 % E_opt=myfft(gaussfilter.*PLSM,mesh);
 % E_opt=myfft(gaussfilter.*(calc_mainFctOptimizeTime(beam,mesh,medium,pulse,Erf)),mesh);
-Ert=handle_NaNInf(myifft(const_GVD.*myfft((Ert),mesh),mesh))+(calc_mainFctOptimizeTime(beam,mesh,medium,pulse,Ert))+(const.c/(2.*medium.n0)).*do_2Dfinitedifference(mesh,medium,cumsum(Ert.*mesh.dt,2),M_fd);
+
+% Ert=handle_NaNInf(myifft(const_GVD.*myfft(abs(Ert).*exp(pulse.carrier),mesh),mesh))+(calc_mainFctOptimizeTime(beam,mesh,medium,pulse,Ert))+(const.c/(2.*medium.n0)).*do_2Dfinitedifference(mesh,medium,cumsum(Ert.*mesh.dt,2),M_fd);
+Ert=handle_NaNInf(myifft(const_GVD.*myfft(abs(Ert).*exp(pulse.carrier),mesh),mesh))+(calc_mainFctOptimizeTime(beam,mesh,medium,pulse,Ert));
+
+
 % Erf=(const.c/(2.*medium.n0)).*do_2Dfinitedifference(mesh,medium,cumsum(Erf.*mesh.dt,2),M_fd);%(calc_mainFctOptimizeTime(beam,mesh,medium,pulse,E_opt))
 % LRbounds=find_bounds(Erf(1,:));
 % filgaussPLSM=calc_supergaussian(mesh.f,mesh.df*(LRbounds(1,3)-LRbounds(1,1)),10,mesh.df*(LRbounds(1,2)-mesh.indexfmid));

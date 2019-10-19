@@ -2,15 +2,19 @@
 classdef pulse_init
     
     properties
-    w0,t_pulse,tau0,t0,Ert,carrier,A0,Energy,Erf,Energyf,order,pfmid,ptmid,fwhmF,fwhmT,Epeak,Ipeak,PpeakTheo,IpeakTheo
+    w0,t_pulse,tau0,t0,Ert,carrier,A0,Energy,Erf,Energyf,order,pfmid,ptmid,fwhmF,fwhmT,Epeak,Ipeak,PpeakTheo,IpeakTheo,t_e2
     end
     
     methods
-        function s=pulse_init(mesh,beam,medium,t_delay,order)
+        function s=pulse_init(mesh,beam,medium,t_delay,order,center_freq)
         s.order=order;                                                     %order: harmonic number
         s.t_pulse=beam.t_pulse/sqrt(s.order);                              %Pulse duration @ I/e^2
         s.tau0=s.t_pulse/(2*sqrt(2));                                      %Pulse duration @ 1sigma (Gaussian variance)
-        s.w0=beam.w0.*s.order;                                             %center frequency
+        if center_freq>0
+            s.w0=center_freq*2*pi*s.order;
+        else
+            s.w0=beam.w0.*s.order;                                             %center frequency
+        end
         s.t0=t_delay;                                                      %time delay in s
         timedelay=-(t_delay*1i*2*pi.*(mesh.f));                            %phase from time delay     
         s.carrier=1i*s.w0.*(mesh.t-s.t0);                                  %Oscillation of carrier wave with w0 center frequency
@@ -39,7 +43,7 @@ classdef pulse_init
         %% Peak Intensity
         [s.Ipeak,Ipeakpos]=max(max(Irt,[],1),[],2);
         s.Epeak=max(abs(s.Ert(:,Ipeakpos)),[],1);
-        s.PpeakTheo=0.94*(beam.Q_In/(s.t_pulse*sqrt(log(2)/2))/sqrt(order));
+        s.PpeakTheo=0.94*(beam.Q_In/(s.t_pulse*sqrt(log(2)/2))/sqrt(order));%Peak Power of Gaussina pulse
         s.IpeakTheo=s.PpeakTheo/(beam.area_mode/2);%Peak intensity for Gaussian beam from peak power
         %% Test Peak Intensity        
         tolerance=1e-2;
@@ -67,6 +71,8 @@ classdef pulse_init
         %test the time bandwidth product
         s.fwhmF=calc_fwhm(mesh.f,Irf(1,:));
         s.fwhmT=calc_fwhm(mesh.t,Irt(1,:));
+        mybounds=find_bounds2(s.Ert(1,:));
+        s.t_e2=mesh.dt*(mybounds(1,3)-mybounds(1,1));
         tolerance=2e-2;%set arbitrary tolerance
         fwhm_error=abs(s.fwhmT*s.fwhmF-0.44)/0.44;
 %         test_errorMSG(abs(s.fwhmT*s.fwhmF-0.44)/0.44 >tolerance,'pulse_init: FWHM of Et and Ef not conserved!')  

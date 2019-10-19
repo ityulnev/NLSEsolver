@@ -34,7 +34,7 @@ classdef mesh_init
             case 1
                 s.r=0;
             case 2%3D with cylinder symmetry!
-                s.R=150e-6;%800e-6;%[m]
+                s.R=200e-6;%800e-6;%[m]
                 s.dr=2e-6;
                 s.rmin=s.dr*2;
                 s.r=s.rmin:s.dr:s.R;%start at r0=3*dr to avoid singularity at r0=0! 

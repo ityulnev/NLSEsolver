@@ -19,7 +19,7 @@ m=0;
 whist=mesh.dr*2+(find(abs(pulse.Ert(:,pulse.ptmid)).^2<abs(pulse.Ert(1,pulse.ptmid))^2/exp(2),1)-1)*mesh.dr;
 [n_e]=calc_2DeDensityADK(pulse.Ert,mesh,medium,beam,pulse);
 IonizLvl=max(n_e(1,:))/medium.n_gas;
-
+n_ein=n_e;
     while zprop<(mesh.Lz)
 %%        
         m=m+1;
