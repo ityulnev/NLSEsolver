@@ -52,9 +52,9 @@ end
 % end
 if strcmp(globproperties.mode,'debug')
     subplot(4,2,[3 4])
-    plot(mesh.t,[(angle(Er(1:3,:)))]); xlim([-20e-15 20e-15])
+    plot(mesh.t,[(angle(Er(1:3,:)))]); xlim([-100e-15 100e-15])
     subplot(4,2,[5 6])
-    plot(mesh.t,[(angle(Er(end-2:end,:)))]); xlim([-20e-15 20e-15])
+    plot(mesh.t,[(angle(Er(end-2:end,:)))]); xlim([-100e-15 100e-15])
     pause(0.1);
 end
 

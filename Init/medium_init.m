@@ -9,8 +9,8 @@ classdef medium_init
     methods
         function s=medium_init(mesh,beam,gas)
         s.gas=gas;%gastype
-        s.temperature=300;%[K]
-        s.pressure=2;%[bar]
+        s.temperature=270;%[K]
+        s.pressure=1;%[bar]
         %% Refractive Index
         switch gas
             case 'Neon'
@@ -20,6 +20,10 @@ classdef medium_init
 %             s.n2=s.pressure*0.85e-24;%0.625e-24;%[m^2/W]                                        %Nonlinear refractive index for SPM
             [n2pressure,n2]=calc_refrIndex(beam.wavelength,'Neon_n2',s.pressure,s.temperature);
             s.n2=(n2pressure-s.n0pressure)/2.224e18;
+            case 'Argon'
+            [s.n0pressure,s.n0] = calc_refrIndex(beam.wavelength,gas,s.pressure,s.temperature);   %refractive index at center frequency
+            [s.npressure,s.n]   = calc_refrIndex(mesh.wvl,gas,s.pressure,s.temperature);    
+            s.n2 = 9.5e-24; %[m^2/W]
         end
         %% Gas Parameters
         switch gas
@@ -42,7 +46,7 @@ classdef medium_init
         %% Linear Refractive index and wave number k
         s.n_ext=[zeros(1,mesh.fbound-1),s.n];
         s.npressure_ext=[zeros(1,mesh.fbound-1),s.npressure];
-        s.Iconst=0.5*s.n0*const.c*const.eps0;% Constant factor for calculating signal intensity I=Iconst*abs(E)^2
+        s.Iconst=s.n0*const.c*const.eps0;% Constant factor for calculating signal intensity I=Iconst*abs(E)^2 ##0.5*
         % wave number k
         s.k0=s.n0pressure*beam.f0*2*pi/const.c;
         s.k=(s.npressure_ext).*(2.*pi.*mesh.f)./const.c;

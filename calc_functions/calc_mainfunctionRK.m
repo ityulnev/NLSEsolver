@@ -2,7 +2,7 @@
 function [Ert]=calc_mainfunctionRK(mesh,pulse,beam,medium,Ert,M_fd)
 %%
 % Erf=myifft(Erf,mesh);
-gaussfilter=calc_supergaussian(mesh.t,pulse.t_pulse.*5,10,0);  %mesh.dt.*round(mesh.flength/20)
+gaussfilter=calc_supergaussian(mesh.t,800e-15,10,0);  %mesh.dt.*round(mesh.flength/20)  ||  pulse.t_pulse.*10
 %% Self Phase Modulation // Self Steepening
 % NL=-1i*(2*pi.*beam.f0.*medium.n2/const.c).*medium.Iconst.*abs(Et).^2;
 % SPMSST=(2*pi.*(mesh.f))./(pulse.w0).*myfft((SPM.*Et),mesh);%

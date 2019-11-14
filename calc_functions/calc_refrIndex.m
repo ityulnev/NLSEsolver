@@ -11,6 +11,9 @@ switch gas
     %n0+n2*Ipeak for pressure scaling of n2     
     ref_n=1+0.00128145./(184.661-wavelength.^(-2))+0.0220486./(376.84-wavelength.^(-2));
     ref_n=ref_n+7.5e-25*2.224e18;
+    case 'Argon'
+    %Refractive Index at T=273.14[K] and 1.01325[bar] (101325Pa)
+    ref_n=1+2.50141e-3./(91.012-wavelength.^(-2))+5.00283e-4./(87.892-wavelength.^(-2))+5.22343e-2./(214.02-wavelength.^(-2)); %https://refractiveindex.info/?shelf=main&book=Ar&page=Bideau-Mehu    
 end
 
 %calculate Polarizability alpha for reference conditions with https://de.wikipedia.org/wiki/Clausius-Mossotti-Gleichung

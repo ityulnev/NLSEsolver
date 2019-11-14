@@ -47,7 +47,7 @@ classdef mesh_init
         s.rlength=length(s.r); 
         s.rmid=round(s.rlength/2);
        %% tanh(x) filter
-       s.tanhfilterL=calc_tanhfilter((beam.f0.*s.t),s.indexfmid);
+       s.tanhfilterL=calc_tanhfilter((beam.f0.*s.t.*0.5),s.indexfmid);
        s.tanhfilterR=fliplr(ifftshift(s.tanhfilterL));
        s.tanhfilterLR=s.tanhfilterL.*s.tanhfilterR;
        end
