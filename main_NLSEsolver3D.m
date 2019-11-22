@@ -18,13 +18,12 @@ pulse=pulse_init(mesh,beam,medium,0,1,0);% parameters of pulse          #Set(Et(
 % figure; plot(mesh.t,[dat.E_synth.*3.876e10;real(syn.Ert(1,:))])
 % figure; plot(mesh.f,abs([norm_fields(myfft(dat.E_synth,mesh),myfft(real(syn.Ert(1,:)),mesh),'indiv')]).^2)
 
-
 %% 2D Propagate, Finite Difference + Split Step
 comment='electron drift';
 boundcon=["open","open"]; %left and right boundary condition
-[Er,Etz,Et0z,ne_tz,ne_t0z,zprop,Qhist,whist,IonizLvl]=do_WaveEqSolver(mesh,beam,medium,pulse,pulse.Ert,boundcon,comment);
+[Er,Etrz,zprop,IonizLvl,Zsteps,mm]=do_WaveEqSolver(mesh,beam,medium,pulse,pulse.Ert,boundcon,comment);
 %% Self-focusing length
 % L_spm=0.367*medium.k0*beam.r_mode^2/sqrt((sqrt(pulse.PpeakTheo/medium.P_crit)-0.852)^2-0.0219);
 %% Save
 save([date,'ION',num2str(beam.n_cycles),'Test.mat']);
-
+                    

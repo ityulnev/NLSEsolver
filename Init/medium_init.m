@@ -46,7 +46,7 @@ classdef medium_init
         %% Linear Refractive index and wave number k
         s.n_ext=[zeros(1,mesh.fbound-1),s.n];
         s.npressure_ext=[zeros(1,mesh.fbound-1),s.npressure];
-        s.Iconst=s.n0*const.c*const.eps0;% Constant factor for calculating signal intensity I=Iconst*abs(E)^2 ##0.5*
+        s.Iconst=0.5.*s.n0*const.c*const.eps0;% Constant factor for calculating signal intensity I=Iconst*abs(E)^2 ##0.5*
         % wave number k
         s.k0=s.n0pressure*beam.f0*2*pi/const.c;
         s.k=(s.npressure_ext).*(2.*pi.*mesh.f)./const.c;

@@ -2,7 +2,7 @@
 classdef pulse_init
     
     properties
-    w0,t_pulse,tau0,t0,Ert,carrier,A0,Energy,Erf,Energyf,order,pfmid,ptmid,fwhmF,fwhmT,Epeak,Ipeak,PpeakTheo,IpeakTheo,t_e2
+    w0,t_pulse,tau0,t0,Ert,carrier,A0,Energy,Erf,Energyf,order,pfmid,ptmid,fwhmF,fwhmT,Epeak,Ipeak,PpeakTheo,IpeakTheo,t_Ie2,indt_Ie2
     end
     
     methods
@@ -22,7 +22,8 @@ classdef pulse_init
         ef=exp(-(2*pi.*(mesh.f)).^2.*s.tau0^2./2-timedelay);
         et=myifft(ef,mesh);
         et=et.*exp(s.carrier);
-        s.A0=sqrt(beam.Fluence/(sum(medium.Iconst.*abs(et).^2)*mesh.dt));
+        s.A0=sqrt(beam.Fluence/(sum(medium.Iconst.*abs(et).^2)*mesh.dt));  % integral over Envelope^2 = integral over time averaged Poynting vector!
+                                                                           % 0.5*int(abs(Ecomplex)^2,dt)dt=int(abs(real(Ecomplex))^2,dt)
         n_gaussian=1;                                                      %Gaussian order
         er=exp(-(((mesh.r).^2./((beam.r_mode)^2))).^n_gaussian);
         %% pulse Field and Intensity in t,f
@@ -72,7 +73,8 @@ classdef pulse_init
         s.fwhmF=calc_fwhm(mesh.f,Irf(1,:));
         s.fwhmT=calc_fwhm(mesh.t,Irt(1,:));
         mybounds=find_bounds2(s.Ert(1,:));
-        s.t_e2=mesh.dt*(mybounds(1,3)-mybounds(1,1));
+        s.t_Ie2=mesh.dt*(mybounds(1,3)-mybounds(1,1));
+        s.indt_Ie2=mybounds(1,3);
         tolerance=2e-2;%set arbitrary tolerance
         fwhm_error=abs(s.fwhmT*s.fwhmF-0.44)/0.44;
 %         test_errorMSG(abs(s.fwhmT*s.fwhmF-0.44)/0.44 >tolerance,'pulse_init: FWHM of Et and Ef not conserved!')  

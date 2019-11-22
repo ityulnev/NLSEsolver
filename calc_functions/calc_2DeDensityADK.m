@@ -2,7 +2,7 @@
 function [prod_adk]=calc_2DeDensityADK(prod_adk,mesh,medium,beam,pulse)
 % Ert=abs(0.5.*((Ert.*exp(pulse.carrier))+conj(Ert.*exp(pulse.carrier))));
 prod_adk=abs(real(prod_adk));
-smooth=calc_supergaussian(mesh.t,4e-14,10,0);
+smooth=calc_supergaussian(mesh.t,2*pulse.t_Ie2,10,0);
 prod_adk=smooth.*prod_adk;
 %Quantum Numbers
 l=medium.l;
