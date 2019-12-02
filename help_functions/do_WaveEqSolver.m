@@ -1,11 +1,11 @@
 %Calculate propagated electric field after distance Lz via Rk with FT
 %d/dz(E) from SVEA in 1D
 %Implemented Effects: GVD, SPM, Attenuation, Ionization(Defocusing & Loss)
-function [Er,Etrz,zprop,IonizLvl,Zsteps,mm]=do_WaveEqSolver(mesh,beam,medium,pulse,Er,boundary,comment)
+function [Er,Etrz,zprop,IonizLvl,Zsteps,mm,index_tL,index_tR]=do_WaveEqSolver(mesh,beam,medium,pulse,Er,boundary,comment)
 
 rayl=calc_zrayleigh(beam,mesh,medium,pulse,0);
 wprop=calc_wprop(rayl.win,rayl.zr,rayl.zr);
-Zsteps=10;
+Zsteps=1;
 %Build vector-analogon to finite difference matrix M_fd
 M_fd=M_FiniteDifference_init(mesh,boundary);
 
@@ -20,8 +20,8 @@ IonizLvl=max(n_e(1,:))/medium.n_gas;
 n_ein=n_e;
 
 %shrinked Ert
-index_tR=(pulse.indt_Ie2-pulse.ptmid)*2+pulse.ptmid;
-index_tL=pulse.ptmid-(pulse.indt_Ie2-pulse.ptmid)*2;
+index_tR=(pulse.indt_Ie2-pulse.ptmid)*4+pulse.ptmid;
+index_tL=pulse.ptmid-(pulse.indt_Ie2-pulse.ptmid)*4;
 Etrz=Er(:,index_tL:index_tR);
 
 
@@ -72,7 +72,7 @@ Etrz=Er(:,index_tL:index_tR);
                     plot(mesh.r,[real(Etrz(:,pulse.ptmid-index_tL,1)),real(Etrz(:,pulse.ptmid-index_tL,mm))]); legend('Initial','Propagated');
                     title(['z=',num2str(zprop*1000),'mm','  ','Qout=',num2str(Q*1000),'mJ','  ','dQ=',num2str(dQ)]);
                     subplot(4,2,[7 8])
-                    plot(mesh.t,abs(Er(1,:))); xlim([-5e-14 5e-14])
+                    plot(mesh.t,[abs(Er(1,:));abs(Er(end,:))]); xlim([-5e-14 5e-14])
                     pause(0.1);
                 end
 

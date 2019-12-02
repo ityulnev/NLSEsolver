@@ -14,7 +14,7 @@ classdef beam_init
         s.t_pulse=s.n_cycles/s.f0;                                          %[s] Pulse duration @ Intensity/e2
         s.t_fwhm= s.t_pulse*sqrt(log(2)/2);                                 %[s] Pulse duration @ Full-Width-Half-Maximum
         %Note: Scaling for const Peak Intensity for any Cyclenumber
-        s.Q_In=0.8e-3*(s.n_cycles);                                      %[J] Pulse energy going in %1.9085e-3/3 for 14.79% ionization% 1.1776e-3/ncycle @1/2
+        s.Q_In=0.4e-3*(s.n_cycles);                                      %[J] Pulse energy going in %1.9085e-3/3 for 14.79% ionization% 1.1776e-3/ncycle @1/2
         s.Q_Out=1e-3;                                                       %[J] Pulse energy at end of propagation        
         s.r_mode=100e-6; %30                                                   %[m] beam radius
         s.area_mode=pi*(s.r_mode)^2;                                        %[m^2] beam area

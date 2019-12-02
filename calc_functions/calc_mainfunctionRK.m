@@ -2,7 +2,6 @@
 function [Ert]=calc_mainfunctionRK(mesh,pulse,beam,medium,Ert,M_fd)
 %%
 % Erf=myifft(Erf,mesh);
-gaussfilter=calc_supergaussian(mesh.t,800e-15,10,0);  %mesh.dt.*round(mesh.flength/20)  ||  pulse.t_pulse.*10
 %% Self Phase Modulation // Self Steepening
 % NL=-1i*(2*pi.*beam.f0.*medium.n2/const.c).*medium.Iconst.*abs(Et).^2;
 % SPMSST=(2*pi.*(mesh.f))./(pulse.w0).*myfft((SPM.*Et),mesh);%
@@ -38,15 +37,15 @@ const_GVD=-1i.*(2*pi.*mesh.f-pulse.w0).^2.*medium.k2_w0./2;
 % E_opt=myfft(gaussfilter.*PLSM,mesh);
 % E_opt=myfft(gaussfilter.*(calc_mainFctOptimizeTime(beam,mesh,medium,pulse,Erf)),mesh);
 
-% Ert=handle_NaNInf(myifft(const_GVD.*myfft(abs(Ert).*exp(pulse.carrier),mesh),mesh))+(calc_mainFctOptimizeTime(beam,mesh,medium,pulse,Ert))+(const.c/(2.*medium.n0)).*do_2Dfinitedifference(mesh,medium,cumsum(Ert.*mesh.dt,2),M_fd);
-Ert=handle_NaNInf(myifft(const_GVD.*myfft(abs(Ert).*exp(pulse.carrier),mesh),mesh))+(calc_mainFctOptimizeTime(beam,mesh,medium,pulse,Ert));
+Ert=handle_NaNInf(myifft(const_GVD.*myfft(abs(Ert).*exp(pulse.carrier),mesh),mesh))+(calc_mainFctOptimizeTime(beam,mesh,medium,pulse,Ert))+(const.c/(2.*medium.n0)).*do_2Dfinitedifference(mesh,medium,cumsum(Ert.*mesh.dt,2),M_fd);
+% Ert=handle_NaNInf(myifft(const_GVD.*myfft(abs(Ert).*exp(pulse.carrier),mesh),mesh))+(calc_mainFctOptimizeTime(beam,mesh,medium,pulse,Ert));
 
 
 % Erf=(const.c/(2.*medium.n0)).*do_2Dfinitedifference(mesh,medium,cumsum(Erf.*mesh.dt,2),M_fd);%(calc_mainFctOptimizeTime(beam,mesh,medium,pulse,E_opt))
 % LRbounds=find_bounds(Erf(1,:));
 % filgaussPLSM=calc_supergaussian(mesh.f,mesh.df*(LRbounds(1,3)-LRbounds(1,1)),10,mesh.df*(LRbounds(1,2)-mesh.indexfmid));
 % filgaussL=[filgaussPLSM(1:LRbounds(1,2)),ones(1,mesh.flength-LRbounds(1,2))];
-Ert=(Ert).*gaussfilter;
+Ert=(Ert).*mesh.gaussfilter;
 Ert=do_filter(Ert,'tanhfilterLR','inF',mesh);
 %%
 % Erf=(E_opt.*filgaussL+Erf);

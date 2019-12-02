@@ -2,7 +2,7 @@
 classdef mesh_init
     
     properties
-    Lz,dz,z,zlength,fmax,df,indexfmid,f,flength,fmin,freal,f0bound,t,dt,R,dr,r,rlength,wvl,dwvl,rmin,fbound,rmid,tmid,test,mode,tanhfilterL,tanhfilterR,tanhfilterLR
+    Lz,dz,z,zlength,fmax,df,indexfmid,f,flength,fmin,freal,f0bound,t,dt,R,dr,r,rlength,wvl,dwvl,rmin,fbound,rmid,tmid,test,mode,tanhfilterL,tanhfilterR,tanhfilterLR,gaussfilter
     end
     
    methods 
@@ -47,9 +47,10 @@ classdef mesh_init
         s.rlength=length(s.r); 
         s.rmid=round(s.rlength/2);
        %% tanh(x) filter
-       s.tanhfilterL=calc_tanhfilter((beam.f0.*s.t.*0.5),s.indexfmid);
+       s.tanhfilterL=calc_tanhfilter((beam.f0.*s.t.*4),s.indexfmid);
        s.tanhfilterR=fliplr(ifftshift(s.tanhfilterL));
        s.tanhfilterLR=s.tanhfilterL.*s.tanhfilterR;
+       s.gaussfilter=calc_supergaussian(s.t,800e-15,10,0);
        end
    end
 end

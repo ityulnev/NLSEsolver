@@ -8,7 +8,8 @@ switch M_fd.boundary{1,1}
     case 'const'
         Er(1,:)=Er(2,:);
     case 'open'
-        [~,fleft_smoothfct]=get_smoothfunction(mesh,Er(2,:),'supergaussian');
+%         [~,fleft_smoothfct]=get_smoothfunction(mesh,Er(2,:),'supergaussian');
+        fleft_smoothfct=calc_supergaussian(mesh.t,pulse.t_Ie2,10,0);
         dE=handle_NaNInf(log(Er(3:4,:)./Er(2:3,:))./(1i*mesh.dr));
         kr_LNext=2.*dE(1,:)-1.*dE(2,:);
         kr_LNext=kr_LNext.*fleft_smoothfct;
@@ -29,7 +30,8 @@ switch M_fd.boundary{1,2}
     case 'open'
         dkr=handle_NaNInf(log(Er(end-2:end-1,:)./Er(end-3:end-2,:))./(1i*mesh.dr));
         krNext=2.*dkr(2,:)-dkr(1,:);                                          %delKr(Nr+1)=delKr(Nr)+dKr, with dKr=delKr(Nr)-delKr(Nr-1), dKr is a constant value! b.c. linear function with dr->const
-        [~,fright_smoothfct]=get_smoothfunction(mesh,Er(end,:),'supergaussian');
+%         [~,fright_smoothfct]=get_smoothfunction(mesh,Er(end,:),'supergaussian');
+        fright_smoothfct=calc_supergaussian(mesh.t,pulse.t_Ie2,10,0);
         krNext=krNext.*fright_smoothfct;
         Er(end,:)=Er(end-1,:).*exp(1i.*(krNext).*mesh.dr);                      
     case 'open2'
