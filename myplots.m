@@ -62,5 +62,19 @@ plot(1e6.*mesh.r(1:89),matTprop(1:89,bound2))
 legend('open','const. Div.')
 ylabel('|E(r)|^2 arb.u.')
 title('SPM+Plasma, z=0.85mm')
+%% Test Filters
+
+Ei=abs(sumpulse.Ert(1,:)).^2./max(abs(sumpulse.Ert(1,:)).^2);
+GaussDiv=calc_supergaussian(mesh.t,pulse1.t_Ie2*2,10,0);
+figure; plot(mesh.t,[Ei;mesh.gaussfilter;GaussDiv]);
+
+Ei=abs(Er(end,:)).^2./max(abs(Er(end,:)).^2);
+GaussDiv=calc_supergaussian(mesh.t,pulse.t_Ie2,10,0);
+figure; plot(mesh.t,[Ei;mesh.gaussfilter;GaussDiv]);
+
+Efi=abs(myfft(pulse.Ert(1,:),mesh)).^2./max(abs(myfft(pulse.Ert(1,:),mesh)).^2);
+figure; plot(mesh.f,[Efi;mesh.tanhfilterLR])
+
+
 
 

@@ -5,13 +5,13 @@ function [Er]=do_filter(Er,filtertype,domain,mesh)
 
 switch filtertype
     case 'tanhfilterLR'
-        myfilter=mesh.tanhfilterLR;
+        myfilter=mesh.Tfilter_LR;
     case 'tanhfilterL'
-        myfilter=mesh.tanhfilterL;
+        myfilter=mesh.Tfilter_L;
     case 'tanhfilterR'
-        myfilter=mesh.tanhfilterR;  
+        myfilter=mesh.Tfilter_R;  
     case 'tanhOuterLR'
-        tempfilter=mesh.tanhfilterR;
+        tempfilter=mesh.Tfilter_R;
         tempfilter(1:mesh.indexfmid)=1;
         myfilter=tempfilter.*fliplr(tempfilter);
 end

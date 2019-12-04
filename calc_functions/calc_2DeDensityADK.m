@@ -1,5 +1,5 @@
 %Calculates W_adk for a given E field and a given Gas
-function [prod_adk]=calc_2DeDensityADK(prod_adk,mesh,medium,beam,pulse)
+function [prod_adk]=calc_2DeDensityADK(prod_adk,mesh,medium,pulse)
 % Ert=abs(0.5.*((Ert.*exp(pulse.carrier))+conj(Ert.*exp(pulse.carrier))));
 prod_adk=abs(real(prod_adk));
 smooth=calc_supergaussian(mesh.t,2*pulse.t_Ie2,10,0);

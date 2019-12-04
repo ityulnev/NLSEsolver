@@ -6,7 +6,7 @@ classdef calc_zrayleigh
     end
     
    methods 
-       function s=calc_zrayleigh(beam,mesh,medium,pulse,waist)
+       function s=calc_zrayleigh(mesh,medium,pulse,waist)
         %initial beam waist at Intensity/e^2
         if waist>0
             s.win=waist;             
@@ -15,7 +15,7 @@ classdef calc_zrayleigh
             s.win=indexr.*mesh.dr+mesh.dr*2;
         end
         %Rayleigh length
-            s.zr=pi*s.win^2/(beam.wavelength);
+            s.zr=pi*s.win^2/(pulse.wavelength);
         s.Zsteps=round(s.zr/mesh.dz);         
        end
    end

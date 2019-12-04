@@ -7,7 +7,7 @@ classdef beam_init
     
     methods 
         function s=beam_init
-        s.wavelength=2000e-9; %1360                                              %[m] center wavelength
+        s.wavelength=1132e-9; %1360                                              %[m] center wavelength
         s.f0=const.c/s.wavelength;                                          %[1/s] center frequency
         s.w0=2*pi*s.f0;
         s.n_cycles=3;     %0.3657                                           % number of cycles inside pulse duration

@@ -1,31 +1,35 @@
 %Create structure that contains properties of the pulse in t,f and r domain
-classdef pulse_init
+classdef general_pulse_init
     
     properties
-    w0,t_pulse,tau0,t0,Ert,carrier,A0,Energy,Erf,Energyf,order,pfmid,ptmid,fwhmF,fwhmT,Epeak,Ipeak,PpeakTheo,IpeakTheo,t_Ie2,indt_Ie2
+    wavelength,f0,w0,t_pulse,tau0,t_delay,Ipeak_in,r_mode,beam_area,Iconst,Ert,carrier,A0,Energy,Erf,Energyf,pfmid,ptmid,fwhmF,fwhmT,Epeak,Ipeak,PpeakTheo,IpeakTheo,t_Ie2,indt_Ie2
     end
     
     methods
-        function s=pulse_init(mesh,beam,medium,t_delay,order,center_freq)
-        s.order=order;                                                     %order: harmonic number
-        s.t_pulse=beam.t_pulse/sqrt(s.order);                              %Pulse duration @ I/e^2
+        function s=general_pulse_init(mesh,wavelength,t_pulse,r_mode,Ipeak_in,Iconst,t_delay)            
+        s.t_pulse=t_pulse;                                                 %Pulse duration @ I/e^2
         s.tau0=s.t_pulse/(2*sqrt(2));                                      %Pulse duration @ 1sigma (Gaussian variance)
-        if center_freq>0
-            s.w0=center_freq*2*pi*s.order;
-        else
-            s.w0=beam.w0.*s.order;                                         %center frequency
-        end
-        s.t0=t_delay;                                                      %time delay in s
-        timedelay=-(t_delay*1i*2*pi.*(mesh.f));                            %phase from time delay     
-        s.carrier=1i*s.w0.*(mesh.t-s.t0);                                  %Oscillation of carrier wave with w0 center frequency
+        s.wavelength=wavelength;
+        s.f0=const.c/s.wavelength;
+        s.w0=2*pi*s.f0;
+        s.t_delay=t_delay;                                                 %time delay in s
+        timedelay=-(s.t_delay*1i*2*pi.*(mesh.f));                          %phase from time delay     
+        s.carrier=1i*s.w0.*(mesh.t-s.t_delay);                             %Oscillation of carrier wave with w0 center frequency
+       if Iconst>0
+            s.Iconst=Iconst;                                               %1/2*eps0*c*n0 factor for Calculating Intensity
+       else
+            s.Iconst=const.eps0*const.c*0.5;
+       end
         %% calculate pulse
         ef=exp(-(2*pi.*(mesh.f)).^2.*s.tau0^2./2-timedelay);
         et=myifft(ef,mesh);
-        et=et.*exp(s.carrier);
-        s.A0=sqrt(beam.Fluence/(sum(medium.Iconst.*abs(et).^2)*mesh.dt));  % integral over Envelope^2 = integral over time averaged Poynting vector!
-                                                                           % 0.5*int(abs(Ecomplex)^2,dt)dt=int(abs(real(Ecomplex))^2,dt)
+        et=et.*exp(s.carrier)./max(abs(et));
+        s.Ipeak_in=Ipeak_in;
+        s.A0=sqrt(Ipeak_in/s.Iconst);  % integral over Envelope^2 = integral over time averaged Poynting vector!
+                                                               % 0.5*int(abs(Ecomplex)^2,dt)dt=int(abs(real(Ecomplex))^2,dt)
         n_gaussian=1;                                                      %Gaussian order
-        er=exp(-(((mesh.r).^2./((beam.r_mode)^2))).^n_gaussian);
+        s.r_mode=r_mode;
+        er=exp(-(((mesh.r).^2./((s.r_mode)^2))).^n_gaussian);
         %% pulse Field and Intensity in t,f
         s.Ert=s.A0.*transpose(er).*et;
         s.Erf=myfft(s.Ert,mesh);
@@ -36,16 +40,25 @@ classdef pulse_init
         s.Erf(:,1:mesh.indexfmid)=0;
         s.Ert=myifft(s.Erf,mesh);
         %% Intensity
-        Irt=medium.Iconst.*abs(s.Ert).^2;
-        Irf=medium.Iconst.*abs(s.Erf).^2;         
+        Irt=s.Iconst.*abs(s.Ert).^2;
+        Irf=s.Iconst.*abs(s.Erf).^2;         
         %find peak position in time and frequency
         s.ptmid=find(max(Irt(1,:))==Irt(1,:));
         s.pfmid=find(max(Irf(1,:))==Irf(1,:));
+        %% Energy
+        s.beam_area=pi*s.r_mode^2;
+        if size(s.Ert,1)>1
+            s.Energy=2*pi.*trapz(mesh.r,transpose(mesh.r).*trapz(mesh.t,Irt,2),1);
+            s.Energyf=2*pi.*trapz(mesh.r,transpose(mesh.r).*trapz(mesh.f,Irf,2),1);
+        else
+            s.Energy=s.beam_area.*trapz(mesh.t,Irt); 
+            s.Energyf=s.beam_area.*trapz(mesh.f,Irf); 
+        end
         %% Peak Intensity
         [s.Ipeak,Ipeakpos]=max(max(Irt,[],1),[],2);
         s.Epeak=max(abs(s.Ert(:,Ipeakpos)),[],1);
-        s.PpeakTheo=0.94*(beam.Q_In/(s.t_pulse*sqrt(log(2)/2))/sqrt(order));%Peak Power of Gaussina pulse
-        s.IpeakTheo=s.PpeakTheo/(beam.area_mode/2);%Peak intensity for Gaussian beam from peak power
+        s.PpeakTheo=0.94*(s.Energy/(s.t_pulse*sqrt(log(2)/2)));%Peak Power of Gaussina pulse
+        s.IpeakTheo=s.PpeakTheo/(s.beam_area/2);%Peak intensity for Gaussian beam from peak power
         %% Test Peak Intensity        
         tolerance=1e-2;
         Ipeak_error=abs(s.IpeakTheo-s.Ipeak)/s.IpeakTheo;
@@ -54,14 +67,7 @@ classdef pulse_init
         else
             warning(['pulse_init: Peak Intensity of Irt deviates from theoretical Gaussian Ipeak by ',num2str(Ipeak_error.*100),'%'])    
         end        
-        %% Calculate Pulse energy and Test       
-        if size(s.Ert,1)>1
-            s.Energy=2*pi.*trapz(mesh.r,transpose(mesh.r).*trapz(mesh.t,Irt,2),1);
-            s.Energyf=2*pi.*trapz(mesh.r,transpose(mesh.r).*trapz(mesh.f,Irf,2),1);
-        else
-            s.Energy=medium.area_hcf.*trapz(mesh.t,Irt); 
-            s.Energyf=medium.area_hcf.*trapz(mesh.f,Irf); 
-        end
+        %% Test       
         %test the energy conservation
         tolerance=1e-4;%set arbitrary tolerance
         energy_error=abs(s.Energyf-s.Energy)/s.Energy;
@@ -80,7 +86,7 @@ classdef pulse_init
 %         test_errorMSG(abs(s.fwhmT*s.fwhmF-0.44)/0.44 >tolerance,'pulse_init: FWHM of Et and Ef not conserved!')  
         if fwhm_error>tolerance
 %             warning(['pulse_init: FWHM product of Irt/Irf deviate from theoretical value by ',num2str(energy_error.*100),'%'])    
-                    warning(['pulse_init: FWHM product of Irt/Irf deviate from theoretical value by ',num2str(fwhm_error.*100),'%'])    
+                    warning(['pulse_init: FWHM product of Irt/Irf deviate from theoretical value for a Gaussian Pulse by ',num2str(fwhm_error.*100),'%'])    
         end
         end
     end
