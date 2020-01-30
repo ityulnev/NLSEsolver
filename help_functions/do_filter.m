@@ -14,6 +14,8 @@ switch filtertype
         tempfilter=mesh.Tfilter_R;
         tempfilter(1:mesh.indexfmid)=1;
         myfilter=tempfilter.*fliplr(tempfilter);
+    case 'TanhandGaussian'
+        myfilter=mesh.Tfilter_LR.*mesh.Gfilter_T;          
 end
 if strcmp('inF',domain)
     Er=myifft(myfilter.*myfft(Er,mesh),mesh);

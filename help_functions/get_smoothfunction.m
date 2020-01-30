@@ -1,4 +1,4 @@
-%Take matrix (r,f or t) and calculate smoothing functions for Maximum in r
+%Take matrix (r,f or t) and calculate smooth functions(filter) for Maximum in r
 %and f or t
 %A smoothfunction is used to get rid of sharp edges that cuase problems in
 %fourier transform e.g. FFT(smoothfct*stepfct) as well as noise

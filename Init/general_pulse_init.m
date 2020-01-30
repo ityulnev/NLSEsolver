@@ -2,11 +2,11 @@
 classdef general_pulse_init
     
     properties
-    wavelength,f0,w0,t_pulse,tau0,t_delay,Ipeak_in,r_mode,beam_area,Iconst,Ert,carrier,A0,Energy,Erf,Energyf,pfmid,ptmid,fwhmF,fwhmT,Epeak,Ipeak,PpeakTheo,IpeakTheo,t_Ie2,indt_Ie2
+    wavelength,f0,w0,t_pulse,tau0,t_delay,cep,Ipeak_in,r_mode,beam_area,Iconst,Ert,carrier,A0,Energy,Erf,Energyf,pfmid,ptmid,fwhmF,fwhmT,Epeak,Ipeak,PpeakTheo,IpeakTheo,t_Ie2,indt_Ie2
     end
     
     methods
-        function s=general_pulse_init(mesh,wavelength,t_pulse,r_mode,Ipeak_in,Iconst,t_delay)            
+        function s=general_pulse_init(mesh,wavelength,t_pulse,r_mode,Ipeak_in,Iconst,t_delay,cep)            
         s.t_pulse=t_pulse;                                                 %Pulse duration @ I/e^2
         s.tau0=s.t_pulse/(2*sqrt(2));                                      %Pulse duration @ 1sigma (Gaussian variance)
         s.wavelength=wavelength;
@@ -15,7 +15,8 @@ classdef general_pulse_init
         s.t_delay=t_delay;                                                 %time delay in s
         timedelay=-(s.t_delay*1i*2*pi.*(mesh.f));                          %phase from time delay     
         s.carrier=1i*s.w0.*(mesh.t-s.t_delay);                             %Oscillation of carrier wave with w0 center frequency
-       if Iconst>0
+        s.cep=cep;
+        if Iconst>0
             s.Iconst=Iconst;                                               %1/2*eps0*c*n0 factor for Calculating Intensity
        else
             s.Iconst=const.eps0*const.c*0.5;
@@ -23,7 +24,7 @@ classdef general_pulse_init
         %% calculate pulse
         ef=exp(-(2*pi.*(mesh.f)).^2.*s.tau0^2./2-timedelay);
         et=myifft(ef,mesh);
-        et=et.*exp(s.carrier)./max(abs(et));
+        et=et.*exp(1i.*cep).*exp(s.carrier)./max(abs(et));
         s.Ipeak_in=Ipeak_in;
         s.A0=sqrt(Ipeak_in/s.Iconst);  % integral over Envelope^2 = integral over time averaged Poynting vector!
                                                                % 0.5*int(abs(Ecomplex)^2,dt)dt=int(abs(real(Ecomplex))^2,dt)

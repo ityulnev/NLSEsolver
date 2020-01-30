@@ -64,16 +64,16 @@ ylabel('|E(r)|^2 arb.u.')
 title('SPM+Plasma, z=0.85mm')
 %% Test Filters
 
-Ei=abs(sumpulse.Ert(1,:)).^2./max(abs(sumpulse.Ert(1,:)).^2);
-GaussDiv=calc_supergaussian(mesh.t,pulse1.t_Ie2*2,10,0);
-figure; plot(mesh.t,[Ei;mesh.gaussfilter;GaussDiv]);
+Ei=abs(pulse.Ert(1,:)).^2./max(abs(pulse.Ert(1,:)).^2);
+GaussDiv=calc_supergaussian(mesh.t,pulse.t_Ie2*1,10,0);
+figure; plot(mesh.t,[Ei;mesh.Gfilter_T;GaussDiv]);
 
-Ei=abs(Er(end,:)).^2./max(abs(Er(end,:)).^2);
+Ei=abs(Er(1,:)).^2./max(abs(Er(1,:)).^2);
 GaussDiv=calc_supergaussian(mesh.t,pulse.t_Ie2,10,0);
-figure; plot(mesh.t,[Ei;mesh.gaussfilter;GaussDiv]);
+figure; plot(mesh.t,[Ei;mesh.Gfilter_T;GaussDiv]);
 
-Efi=abs(myfft(pulse.Ert(1,:),mesh)).^2./max(abs(myfft(pulse.Ert(1,:),mesh)).^2);
-figure; plot(mesh.f,[Efi;mesh.tanhfilterLR])
+Efi=abs(myfft(sumpulse.Ert(1,:),mesh)).^2./max(abs(myfft(sumpulse.Ert(1,:),mesh)).^2);
+figure; plot(mesh.f,[Efi;mesh.Tfilter_LR;mesh.Gfilter_T])
 
 
 

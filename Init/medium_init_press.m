@@ -1,16 +1,16 @@
 %Create structure that contains all properties of the medium in which the
 %pulse propagates, e.g. gastype, refractive index, temperature, pressure
-classdef medium_init
+classdef medium_init_press
   
     properties
     temperature,pressure,n2,n0,n,Iconst,gas,k,k0,n0pressure,npressure,n_ext,npressure_ext,kGV,kGVD,kTOD,k1_w0,k2_w0,l,m,Eg,n_gas,P_crit,k_fit
     end
    
     methods
-        function s=medium_init(mesh,beam,gas)
+        function s=medium_init_press(mesh,beam,gas,pressure)
         s.gas=gas;%gastype
         s.temperature=270;%[K]
-        s.pressure=5;%[bar]
+        s.pressure=pressure;%[bar]
         %% Refractive Index
         switch gas
             case 'Neon'
