@@ -45,6 +45,7 @@ Etrz=Er(:,index_tL:index_tR);
                 Etrz(:,:,mm)=Er(:,index_tL:index_tR);
 
                 counter=0;
+                %plot
                 if strcmp(globproperties.mode,'debug')
                 Q=2*pi.*trapz(mesh.r,transpose(mesh.r).*matTprop(:,end));
                 dQ=(pulse.Energy-Q)/abs(pulse.Energy);
@@ -57,11 +58,8 @@ Etrz=Er(:,index_tL:index_tR);
                     pause(0.1);
                 end
 
-            end
-            
-            counter=counter+1;
-
-            
+            end            
+         counter=counter+1;     
 %% Tests
             if strcmp(lastwarn,'myErrorID')
                 switch globproperties.mode
